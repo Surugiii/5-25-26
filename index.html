@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Sa'yo, Mahal Ko | Pusong Naghihintay</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #fdd9e2 0%, #ffe6f0 40%, #ffd9e5 100%);
+      font-family: 'Quicksand', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      padding: 1.5rem;
+      cursor: default;
+    }
+
+    /* Floating hearts background */
+    .hearts-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .heart-float {
+      position: absolute;
+      color: rgba(255, 80, 120, 0.6);
+      font-size: 1rem;
+      bottom: -40px;
+      animation: floatUp linear infinite;
+      pointer-events: none;
+      z-index: 1;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-110vh) rotate(20deg);
+        opacity: 0;
+      }
+    }
+
+    .greeting-container {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ENVELOPE STYLES */
+    .envelope {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      background: #fffef7;
+      border-radius: 0 0 32px 32px;
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 215, 215, 0.5), inset 0 1px 4px rgba(255, 255, 200, 0.8);
+      cursor: pointer;
+      text-align: center;
+      padding: 48px 30px 42px;
+      transition: transform 0.25s ease, box-shadow 0.3s;
+      backdrop-filter: blur(2px);
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+
+    .envelope:hover {
+      transform: scale(1.02);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: -32px;
+      left: 0;
+      width: 100%;
+      height: 32px;
+      z-index: 5;
+    }
+    .envelope-flap::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 190px solid transparent;
+      border-right: 190px solid transparent;
+      border-bottom: 36px solid #ffcdd6;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+    @media (max-width: 480px) {
+      .envelope-flap::before {
+        border-left: 155px solid transparent;
+        border-right: 155px solid transparent;
+        border-bottom: 32px solid #ffcdd6;
+      }
+    }
+
+    .envelope .heart-icon {
+      font-size: 3.5rem;
+      color: #e8436e;
+      margin-bottom: 16px;
+      text-shadow: 0 4px 12px rgba(232, 67, 110, 0.3);
+      animation: gentleBeat 1.8s infinite ease;
+    }
+
+    @keyframes gentleBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); text-shadow: 0 6px 16px rgba(232, 67, 110, 0.5); }
+    }
+
+    .envelope p {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #b13e5c;
+      letter-spacing: 1px;
+      margin-top: 8px;
+      background: rgba(255, 245, 240, 0.7);
+      display: inline-block;
+      padding: 5px 18px;
+      border-radius: 60px;
+      backdrop-filter: blur(4px);
+    }
+
+    .envelope .small-note {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.8rem;
+      margin-top: 20px;
+      color: #a55c6e;
+      letter-spacing: 2px;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    /* LOVE LETTER CARD - personalized */
+    .love-letter-card {
+      display: none;
+      background: #fffef5;
+      width: 100%;
+      max-width: 620px;
+      border-radius: 48px 28px 48px 28px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2), 0 5px 18px rgba(160, 50, 70, 0.2);
+      padding: 2.2rem 2rem 2.5rem;
+      position: relative;
+      transition: all 0.4s;
+      animation: letterGlow 0.8s ease-out;
+      border: 1px solid rgba(255, 200, 200, 0.6);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    @keyframes letterGlow {
+      0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(25px);
+        filter: blur(3px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    /* Custom scrollbar */
+    .love-letter-card::-webkit-scrollbar {
+      width: 5px;
+    }
+    .love-letter-card::-webkit-scrollbar-track {
+      background: #ffe0e7;
+      border-radius: 10px;
+    }
+    .love-letter-card::-webkit-scrollbar-thumb {
+      background: #e8436e;
+      border-radius: 10px;
+    }
+
+    .love-letter-card .wax-seal {
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      font-size: 2.8rem;
+      color: #c9426b;
+      opacity: 0.7;
+      transform: rotate(8deg);
+      filter: drop-shadow(2px 3px 6px rgba(0,0,0,0.1));
+      pointer-events: none;
+    }
+
+    .letter-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px dashed #ffb7c3;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .letter-header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5rem;
+      color: #b13e5c;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .letter-header i {
+      color: #e85d8a;
+      margin: 0 6px;
+    }
+
+    .letter-content {
+      font-family: 'Quicksand', sans-serif;
+      color: #2d2a2a;
+      line-height: 1.7;
+      font-size: 1rem;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    .letter-content p {
+      margin-bottom: 1.2rem;
+      font-weight: 500;
+    }
+
+    .greeting-line {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #a13054;
+      background: #fff0f3;
+      padding: 6px 12px;
+      border-radius: 30px;
+      display: inline-block;
+    }
+
+    .signature {
+      text-align: right;
+      margin-top: 25px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.7rem;
+      color: #c94f74;
+      font-weight: bold;
+      border-top: 1px dashed #ffcdd6;
+      padding-top: 16px;
+    }
+
+    .signature i {
+      font-size: 1.2rem;
+      margin-right: 4px;
+    }
+
+    .small-love-note {
+      text-align: center;
+      font-size: 0.75rem;
+      margin-top: 20px;
+      color: #b57383;
+      letter-spacing: 0.5px;
+    }
+
+    /* responsiveness */
+    @media (max-width: 550px) {
+      .love-letter-card {
+        padding: 1.6rem 1.2rem;
+      }
+      .letter-header h1 {
+        font-size: 2rem;
+      }
+      .signature {
+        font-size: 1.4rem;
+      }
+      .envelope {
+        max-width: 320px;
+        padding: 38px 20px 35px;
+      }
+      .envelope p {
+        font-size: 1.4rem;
+      }
+      .envelope .heart-icon {
+        font-size: 3rem;
+      }
+    }
+
+    .envelope {
+      cursor: pointer;
+    }
+    .envelope:active {
+      transform: scale(0.98);
+    }
+
+    .love-letter-card::before {
+      content: "❤️";
+      position: absolute;
+      top: -12px;
+      left: 30px;
+      font-size: 28px;
+      opacity: 0.6;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
+      transform: rotate(-10deg);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <div class="greeting-container">
+    <!-- Envelope (click to open) -->
+    <div class="envelope" id="envelopeCard">
+      <div class="envelope-flap"></div>
+      <div class="heart-icon">
+        <i class="fas fa-heart"></i>
+      </div>
+      <p>Happy Monthsary</p>
+      <div class="small-note">
+        <i class="fas fa-envelope-open-text"></i> Press to Comeback😁
+      </div>
+    </div>
+
+    <!-- Personalized Love Letter Card (YOUR MESSAGE) -->
+    <div class="love-letter-card" id="loveLetterCard">
+      <div class="letter-header">
+        <h1><i class="fas fa-heart"></i> A letter for my Everything <i class="fas fa-heart"></i></h1>
+      </div>
+      <div class="letter-content">
+        <p><span class="greeting-line"><i class="fas fa-pen-fancy"></i> To my pretty Yeobooo</span></p>
+        
+        <p>I know na medjo late po to, sorry, but lahat po ng ginawa ko is sincere and genuine. My intentions were pure, all I wanted was it to be you, us forever. But my ways were not actually the best for us and I regret making you feel like you've never done your best. I made you feel like you were not enough, I made you feel like I don't love you and I understand. But it's okay to feel like that because you just did what you can offer to us, to me. But I also did what I think the best for you, but I didn't know better that time. I'm sorry na ngayon ko lang binago, sorry for not realizing it sooner. I know mahirap pang magtiwala po saken, naiintindihan ko, but I wanna earn it back again. I will fight for us so hold on that love you had for me while you're healing, please.</p>
+        
+        <p><i class="fas fa-heartbeat" style="color:#e8436e; margin-right: 6px;"></i> <strong>I miss you yeobo,</strong> gusto ko na ulit makipagusap sayo. Tatanungin ano nangyare sa araw natin, makipag laro, mag heartopia, mag ML, manood din anime, gusto ko na magawa yun. Kumain po sa labas, gumalaa, mag-ipon para sa staycation natin, mag-ipon din para sa Spiderman sa July. Miss ko na goodnighttt mo, goodmorning mo, "I lovee you" mo. Miss na misss ko na lahat po. Madami pa tayong hindi nagagawa magkasama, pumunta sa MOA. Umaasa parin po ako, gusto na ulit kita makausap, magkatampuhan, makiss, at mahug. miss na miss na kita. <strong>sana bumalik kana po.</strong></p>
+        
+        <p>That's all I want, you know I'm just here waiting for you. You know I love you and I also know you love me too, so please take your time and come back. I'm sorry for being selfish but I can't lose you, I don't want to. So ipaglalaban ko tayo kahit ganto na tayo, kasi kahit ganto sitwasyon natin nakikita parin kita na nasa future ko. Nararamdaman ko parin yung pakiramdam ko sayo nung araw na nasa bus lang tayo, wala pang tayo pero alam ko na mahal na natin isa't isa. Nararamdaman ko parin yung bilis ng tibok ng puso ko kapag kasama ka. Kahit nung araw na nagkita tayo at umiiyak ako sayo, nakikita ko parin yung mga mata mo kagaya nung araw na umamin ako, that was the best day of my life and hinding hindi ko yun kakalimutan at nakakalimutan. Happy monthsary Yeoboo, alam kong wala napo tayo pero gusto ko parin ganun, sorry po if ang kapal ng mukha ko.</p>
+        
+        <p style="font-weight: 700; font-size: 1.1rem; color: #b13e5c; text-align: center;">I LOVE YOU, AND I WILL ALWAYS DO, FOREVER.</p>
+      </div>
+      <div class="signature">
+        <i class="fas fa-heart"></i> 🌷 From your only guy 🌷
+      </div>
+      <div class="small-love-note">
+        <i class="fas fa-infinity"></i> 💐 🌷 May 25, 2026 🌷 💐 <i class="fas fa-infinity"></i>
+      </div>
+      <div class="wax-seal">
+        <i class="fas fa-stamp"></i>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create floating hearts background (romantic atmosphere)
+    function createFloatingHearts() {
+      const heartsContainer = document.getElementById('heartsBg');
+      if (!heartsContainer) return;
+      const numberOfHearts = 42;
+      for (let i = 0; i < numberOfHearts; i++) {
+        const heart = document.createElement('i');
+        heart.classList.add('heart-float', 'fas', 'fa-heart');
+        const size = 0.7 + Math.random() * 1.8;
+        heart.style.fontSize = `${size}rem`;
+        const leftPos = Math.random() * 100;
+        heart.style.left = `${leftPos}%`;
+        const duration = 8 + Math.random() * 16;
+        heart.style.animationDuration = `${duration}s`;
+        const delay = Math.random() * 15;
+        heart.style.animationDelay = `${delay}s`;
+        const opacityVal = 0.25 + Math.random() * 0.55;
+        heart.style.opacity = opacityVal;
+        const pinkHues = ['#f08a9e', '#e96b8f', '#ff8dae', '#f05f89', '#ff98b9', '#e8436e', '#f06a8c'];
+        const randomColor = pinkHues[Math.floor(Math.random() * pinkHues.length)];
+        heart.style.color = randomColor;
+        heartsContainer.appendChild(heart);
+      }
+    }
+
+    const envelope = document.getElementById('envelopeCard');
+    const loveLetter = document.getElementById('loveLetterCard');
+
+    function openLoveLetter() {
+      if (!envelope || !loveLetter) return;
+      if (envelope.getAttribute('data-opened') === 'true') return;
+      envelope.setAttribute('data-opened', 'true');
+      
+      envelope.style.transition = 'opacity 0.2s ease, transform 0.2s';
+      envelope.style.transform = 'scale(0.96)';
+      envelope.style.opacity = '0';
+      
+      setTimeout(() => {
+        envelope.style.display = 'none';
+        loveLetter.style.display = 'block';
+        createMiniHeartBurst();
+        
+        // extra floating heart effect
+        const tempHeart = document.createElement('div');
+        tempHeart.innerHTML = '<i class="fas fa-heart" style="font-size: 52px; color: #f06292; filter: drop-shadow(0 0 12px #ffb7c5);"></i>';
+        tempHeart.style.position = 'fixed';
+        tempHeart.style.top = '50%';
+        tempHeart.style.left = '50%';
+        tempHeart.style.transform = 'translate(-50%, -50%) scale(0.6)';
+        tempHeart.style.zIndex = '999';
+        tempHeart.style.opacity = '0';
+        tempHeart.style.transition = 'all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2)';
+        tempHeart.style.pointerEvents = 'none';
+        document.body.appendChild(tempHeart);
+        
+        setTimeout(() => {
+          tempHeart.style.opacity = '1';
+          tempHeart.style.transform = 'translate(-50%, -50%) scale(1.4)';
+        }, 20);
+        setTimeout(() => {
+          tempHeart.style.opacity = '0';
+          setTimeout(() => tempHeart.remove(), 500);
+        }, 800);
+        
+      }, 150);
+    }
+    
+    function createMiniHeartBurst() {
+      const burstContainer = document.createElement('div');
+      burstContainer.style.position = 'fixed';
+      burstContainer.style.top = '0';
+      burstContainer.style.left = '0';
+      burstContainer.style.width = '100%';
+      burstContainer.style.height = '100%';
+      burstContainer.style.pointerEvents = 'none';
+      burstContainer.style.zIndex = '100';
+      document.body.appendChild(burstContainer);
+      
+      for (let i = 0; i < 24; i++) {
+        const miniHeart = document.createElement('i');
+        miniHeart.classList.add('fas', 'fa-heart');
+        miniHeart.style.position = 'absolute';
+        const randomX = Math.random() * window.innerWidth;
+        const randomY = Math.random() * window.innerHeight;
+        miniHeart.style.left = `${randomX}px`;
+        miniHeart.style.top = `${randomY}px`;
+        miniHeart.style.fontSize = `${12 + Math.random() * 28}px`;
+        miniHeart.style.color = `hsl(${340 + Math.random() * 20}, 80%, 65%)`;
+        miniHeart.style.opacity = '0.9';
+        miniHeart.style.transform = 'scale(0)';
+        miniHeart.style.transition = 'transform 0.4s ease-out, opacity 0.7s';
+        miniHeart.style.filter = 'drop-shadow(0 2px 5px rgba(0,0,0,0.1))';
+        burstContainer.appendChild(miniHeart);
+        
+        setTimeout(() => {
+          miniHeart.style.transform = 'scale(1.2)';
+          miniHeart.style.opacity = '0';
+        }, 20);
+        setTimeout(() => {
+          miniHeart.remove();
+        }, 800);
+      }
+      setTimeout(() => {
+        burstContainer.remove();
+      }, 1000);
+    }
+    
+    if (envelope) {
+      envelope.addEventListener('click', openLoveLetter);
+      envelope.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        openLoveLetter();
+      });
+      envelope.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      createFloatingHearts();
+      if (loveLetter) loveLetter.style.display = 'none';
+      if (envelope) envelope.style.opacity = '1';
+    });
+    
+    console.log("%c❤️ 🌷 From your only guy 🌷 ❤️", "color: #e8436e; font-size: 15px; font-family: monospace;");
+    console.log("%c'💐 🌷 May 25, 2026 🌷 💐'", "color: #c45a7a; font-size: 13px; font-style: italic;");
+  </script>
+</body>
+</html>
